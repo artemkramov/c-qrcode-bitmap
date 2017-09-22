@@ -1,0 +1,38 @@
+# depslib dependency file v1.0
+1506076032 source:e:\helpmicro\qrcode\qrcodeexample\main.c
+	<stdbool.h>
+	<stddef.h>
+	<stdlib.h>
+	<string.h>
+	"qrcodegen.h"
+	"worker.h"
+
+1506068046 source:e:\helpmicro\qrcode\qrcodeexample\qrcodegen.c
+	<assert.h>
+	<limits.h>
+	<stdlib.h>
+	<string.h>
+	"qrcodegen.h"
+
+1506066707 e:\helpmicro\qrcode\qrcodeexample\qrcodegen.h
+	<stdbool.h>
+	<stddef.h>
+	<stdint.h>
+
+1506075337 source:e:\helpmicro\qrcode\qrcodeexample\bitmap.c
+	"bitmap.h"
+	<stdio.h>
+	<string.h>
+
+1506075471 e:\helpmicro\qrcode\qrcodeexample\bitmap.h
+
+1506076664 source:e:\helpmicro\qrcode\qrcodeexample\worker.c
+	<stdlib.h>
+	"worker.h"
+	"qrcodegen.h"
+
+1506075680 e:\helpmicro\qrcode\qrcodeexample\worker.h
+	<stdbool.h>
+	<stdint.h>
+	"bitmap.h"
+
