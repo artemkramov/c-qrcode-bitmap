@@ -10,12 +10,12 @@
 * every pixel in the bitmap matrix
 */
 typedef struct {
-    float r, g, b;
+    int r;
 } rgbData;
 
 /**
 * Save bitmap image by the given pixel array
 */
-void saveBitmap(const char *fileName, int width, int height, int dpi, rgbData* pixelData);
+void saveBitmap(const char *fileName, int width, int height, int widthCorrected, rgbData* pixelData);
 
 #endif // BITMAP_H_INCLUDED

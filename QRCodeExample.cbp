@@ -12,6 +12,7 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-std=c99" />
 					<Add option="-g" />
 				</Compiler>
 			</Target>
@@ -31,9 +32,21 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="bitmap.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="bitmap.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="qrcodegen.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="qrcodegen.h" />
+		<Unit filename="worker.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="worker.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

@@ -4,19 +4,19 @@
 
 #define BITMAP_HEADER_SIZE 54 //bytes
 #define BITMAP_FILE_HEADER_SIZE 14 //bytes
-#define BITMAP_BIT_PER_PIXEL 24
+#define BITMAP_BIT_PER_PIXEL 1
 #define BITMAP_DPI_SCALE 39.375
+#define BIT_PER_BYTE 8
 
-void saveBitmap(const char *fileName, int width, int height, int dpi, rgbData* pixelData) {
+void saveBitmap(const char *fileName, int width, int height, int widthCorrected, rgbData* pixelData) {
     // create a file object that we will use to write our image
     FILE *image;
     // we want to know how many pixels to reserve
     int imageSize = width * height;
     // a byte is 4 bits but we are creating a 24 bit image so we can represent a pixel with 3
     // our final file size of our image is the width * height * 4 + size of bitmap header
-    int fileSize = BITMAP_HEADER_SIZE + 4 * imageSize;
-    // pixels per meter https://www.wikiwand.com/en/Dots_per_inch
-    int ppm = dpi * BITMAP_DPI_SCALE;
+    int fileSize = BITMAP_HEADER_SIZE + imageSize / 8;
+
 
     // bitmap file header (14 bytes)
     // we could be savages and just create 2 array but since this is for learning lets
@@ -52,44 +52,66 @@ void saveBitmap(const char *fileName, int width, int height, int dpi, rgbData* p
         unsigned int    clrImportant;      // 4 bytes
     } imageHeader;
 
+    printf("%i\r\n", fileSize);
+
     // if you are on Windows you can include <windows.h>
     // and make use of the BITMAPFILEHEADER and BITMAPINFOHEADER structs
     memcpy(&fileHeader.bitmapType, "BM", 2);
     fileHeader.fileSize       = fileSize;
     fileHeader.reserved1      = 0;
-    fileHeader.reserved2      = 0;
+    fileHeader.reserved2      = 0x3e;
     fileHeader.offsetBits     = 0;
 
     imageHeader.sizeHeader    = sizeof(imageHeader);
-    imageHeader.width         = width;
+    imageHeader.width         = widthCorrected;
     imageHeader.height        = height;
     imageHeader.planes        = 1;
     imageHeader.bitCount      = BITMAP_BIT_PER_PIXEL;
     imageHeader.compression   = 0;
-    imageHeader.imageSize     = fileSize;
-    imageHeader.ppmX          = ppm;
-    imageHeader.ppmY          = ppm;
-    imageHeader.clrUsed       = 0;
-    imageHeader.clrImportant  = 0;
+    imageHeader.imageSize     = 0;
+    imageHeader.ppmX          = 0;
+    imageHeader.ppmY          = 0;
+    imageHeader.clrUsed       = 2;
+    imageHeader.clrImportant  = 2;
 
     image = fopen(fileName, "wb");
 
     // compiler woes so we will just use the constant 14 we know we have
     fwrite(&fileHeader, 1, BITMAP_FILE_HEADER_SIZE, image);
     fwrite(&imageHeader, 1, sizeof(imageHeader), image);
+    unsigned char black[4] = {
+        0,0,0,0
+    };
+    unsigned char white[4] = {
+        255,255,255,255
+    };
+    fwrite((char*)&black, 1, sizeof(black), image); //write RGBQUAD for black
+
+    fwrite((char*)&white, 1, sizeof(white), image); //write RGBQUAD for white
+
 
     // write out pixel data, one last important this to know is the ordering is backwards
     // we have to go BGR as opposed to RGB
-    for (int i = 0; i < imageSize; i++) {
-       rgbData BGR = pixelData[i];
+    for (int i = 0; i < imageSize; i += BIT_PER_BYTE) {
+       int dot = 0;
+       // Unite all qr blocks into groups with 8 items
+       // When byte is formed than write it to file
+       for (int j = i; j < i + BIT_PER_BYTE; j++) {
 
-       float red   = (BGR.r);
-       float green = (BGR.g);
-       float blue  = (BGR.b);
+            rgbData BGR = pixelData[j];
+            int offset = i + BIT_PER_BYTE - j - 1;
+            if ((BGR.r) == 0) {
+                dot &= ~(1 << offset);
+            }
+            else {
+                dot |= 1 << offset;
+            }
+       }
+
 
        // if you don't follow BGR image will be flipped!
-       unsigned char color[3] = {
-           blue, green, red
+       unsigned char color[1] = {
+           dot
        };
        fwrite(color, 1, sizeof(color), image);
     }
