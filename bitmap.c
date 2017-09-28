@@ -52,8 +52,6 @@ void saveBitmap(const char *fileName, int width, int height, int widthCorrected,
         unsigned int    clrImportant;      // 4 bytes
     } imageHeader;
 
-    printf("%i\r\n", fileSize);
-
     // if you are on Windows you can include <windows.h>
     // and make use of the BITMAPFILEHEADER and BITMAPINFOHEADER structs
     memcpy(&fileHeader.bitmapType, "BM", 2);

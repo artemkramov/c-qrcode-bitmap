@@ -9,7 +9,7 @@
 /**
 * Print QR code
 */
-bool printQRCode(const char *fileName, int width, int height, const char *text) {
+bool printQRCode(const char *fileName, int pixelPerQuadrant, const char *text) {
 
     // Set error correction level
     enum qrcodegen_Ecc errorCorrecrionLevel = qrcodegen_Ecc_LOW;
@@ -32,9 +32,9 @@ bool printQRCode(const char *fileName, int width, int height, const char *text) 
         // Count is a changeable value and depends on text complexity
         // For more information see: http://www.qrcode.com/en/about/version.html
         int size = qrcodegen_getSize(qrcode);
-        int widthCorrected = (width / size) * size;
-        width = widthCorrected + (32 - (widthCorrected % 32));
-        height = widthCorrected;
+        int widthCorrected = pixelPerQuadrant * size;
+        int width = widthCorrected + (CORRECTION_VALUE - (widthCorrected % CORRECTION_VALUE));
+        int height = widthCorrected;
 
         // Render pixel data
         rgbData* pixels = preparePixelMatrix(qrcode, width, height);

@@ -15,7 +15,7 @@
 * QR code can be with different version
 * It depends on the text complexity
 */
-bool printQRCode(const char *fileName, int width, int height, const char *text);
+bool printQRCode(const char *fileName, int pixelPerQuadrant, const char *text);
 
 /**
 * Prepare pixel matrix for bitmap filling
